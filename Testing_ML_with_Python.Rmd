@@ -1,0 +1,122 @@
+---
+title: "Machine Learning to predict PCB levels in the brain"
+output: html_notebook
+---
+
+
+```{r results= 'hide'}
+library(mlr)
+library(tidyr)
+library(reticulate)
+library(dplyr)
+
+py_install("pandas")
+py_install("scikit-learn")
+py_install("seaborn")
+```
+
+
+```{python}
+!pip install --user --upgrade pandas scikit-learn seaborn
+
+```
+
+
+```{python}
+# import packages we will use today
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split 
+from sklearn.utils import shuffle
+from sklearn.naive_bayes import GaussianNB
+from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.datasets import load_iris
+from sklearn.metrics import mean_squared_error, r2_score
+```
+
+```{r}
+data<-read.csv("C://Users/agrebinoski/OneDrive - University of Iowa/SubQ_PCB52/Subq_ML_results_20230526.csv")
+data<-data[1:10]
+```
+
+
+```{python}
+# Your answer here
+subq= r.data
+# Check your answer
+subq
+```
+
+
+```{python}
+# Your answer here
+features = ["Total_estimated_exposure_ug", "Brain_g","Body_Weight_g",]
+target = "PCB.52"
+```
+
+```{python}
+# Your answer here
+X = subq[features]
+y= subq[target]
+```
+
+
+```{python}
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=2)
+```
+
+```{python}
+X_shuffled= shuffle(X_train, random_state= 1)
+y_shuffled= shuffle(y_train, random_state= 1)
+```
+
+
+
+```{python}
+# Your answer here
+model = LinearRegression()
+model.fit(X_train, y_train)
+```
+```{python}
+# Your answer here
+y_pred=model.predict(X_test)
+```
+
+```{python}
+model.score(X_test,y_test)
+```
+
+
+####shuffled training data model test
+```{python}
+# Your answer here
+shuf_model = LinearRegression()
+shuf_model.fit(X_train, y_shuffled)
+```
+```{python}
+# Your answer here
+shuff_y_pred=shuf_model.predict(X_test)
+```
+
+```{python}
+shuf_model.score(X_test,y_test)
+```
+
+```{python}
+y_pred
+
+y_test
+
+set_diff = np.setdiff1d(y_pred, y_test)
+set_diff
+```
+```{python}
+shuff_y_pred
+
+y_test
+
+shuffle_set_diff = np.setdiff1d(shuff_y_pred, y_test)
+shuffle_set_diff
+```
